@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- gui for PyLister -->
+<resource>
+    <object class="wxFrame" name="mainFrame">
+        <title>PyLister</title>
+        <object class="wxPanel" name="panel">
+        <object class="wxFlexGridSizer">
+            <cols>2</cols>
+            <rows>3</rows>
+            <vgap>5</vgap>
+            <hgap>5</hgap>
+
+            <object class="sizeritem">
+                <object class="wxStaticText" name="heading">
+                    <style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
+                    <font>
+                        <!-- fixed font: Arial if available, fall back to Helvetica -->
+                        <face>arial,helvetica</face>
+                        <size>20</size>
+                    </font>
+                    <label>PyLister</label>
+                </object>
+            </object>
+
+            <object class="spacer">
+                <size>0,10</size>
+            </object>
+
+            <object class="sizeritem">
+                <object class="wxFilePickerCtrl" name="controls_listbox">
+                    <label>Pick the file please</label>
+                </object>
+            </object>
+
+
+        </object>
+        </object>
+    </object>
+</resource>
