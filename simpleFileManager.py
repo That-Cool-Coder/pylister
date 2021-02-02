@@ -7,8 +7,8 @@ def makeDirPath(path):
         pass
 
 def safeOpen(path, mode):
-    ''' Open "path" for writing, creating any parent directories as needed.
-    '''
+    # Open "path" for writing, creating any parent directories as needed.
+    
     makeDirPath(os.path.dirname(path))
     return open(path, mode, encoding='utf=8')
 

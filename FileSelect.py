@@ -29,13 +29,16 @@ class FileSelect(tk.Frame):
         
     def askFileName(self):
         self.fileName = tk.filedialog.askopenfilename()
+        if self.fileName == ():
+            self.fileName = None
         self.updateFileNameLabel()
 
-        if self.onSelectCallback is not None:
-            self.onSelectCallback()
+        if self.fileName is not None:
+
+            if self.onSelectCallback is not None:
+                self.onSelectCallback()
 
     def updateFileNameLabel(self):
-        print('File name is:', self.fileName)
         if self.fileName is not None:
             # If the file name is short enough, then just write it on
             if len(self.fileName) <= self.maxFileNameLength:
