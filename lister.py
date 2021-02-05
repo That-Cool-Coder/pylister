@@ -1,4 +1,5 @@
 import simpleFileManager as files
+import re
 
 def countLines(fileName=None, code=None):
     code = chooseFileOrCode(fileName, code)
@@ -77,6 +78,11 @@ def countTryExcepts(fileName=None, code=None):
     code = chooseFileOrCode(fileName, code)
 
     return code.count('try:')
+
+def countAssignments(fileName=None, code=None):
+    code = chooseFileOrCode(fileName, code)
+
+    return len(re.findall('(?<![=])(?!=[=])[=]', code))
 
 def chooseFileOrCode(fileName, code):
     if code is not None:

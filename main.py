@@ -8,60 +8,72 @@ import simpleFileManager as files
 from lister import *
 
 class Application:
-    titleFont = ('Helvetica', 35)
-    mainFont = ('Helvetica', 12)
-    initSize = '500x600'
+    
+    # Some UI presets
+    TITLE_FONT = ('Helvetica', 35)
+    MAIN_FONT = ('Helvetica', 12)
+    ICON_PATH = 'icon.png'
+    INIT_SIZE = '500x600'
 
-    propertiesToAnalyse = {
-        'total lines' : countLines,
-        'lines of code' : countCodeLines,
-        'comment lines' : countCommentLines,
-        'blank lines' : countBlankLines,
+    # A collection of analysis functions to call
+    # The key for each pair is the label to output and...
+    # ...the value is the function to call
+    PROPERTIES_TO_ANALYSE = {
+        'Total lines' : countLines,
+        'Lines of code' : countCodeLines,
+        'Comment lines' : countCommentLines,
+        'Blank lines' : countBlankLines,
 
-        'classes' : countClasses,
-        'functions' : countFunctions,
-        'branch statements' : countBranches,
-        'loops' : countLoops,
-        'Try-except statements' : countTryExcepts
+        'Assignment statements' : countAssignments,
+        'Classes' : countClasses,
+        'Functions' : countFunctions,
+        'Branch statements' : countBranches,
+        'Loops' : countLoops,
+        'Try-except blocks' : countTryExcepts
     }
 
     def __init__(self, master):
         self.master = master
         self.master.title('PyLister')
-        self.master.iconphoto(True, tk.PhotoImage(file='icon.png'))
+        self.master.geometry(self.INIT_SIZE)
 
-        self.master.geometry(self.initSize)
+        # Set the image icon for the photo
+        self.master.iconphoto(True, tk.PhotoImage(file=self.ICON_PATH))
 
-        self.title = tk.Label(self.master, text='PyLister', font=self.titleFont)
+        # Create heading for UI
+        self.title = tk.Label(self.master, text='PyLister', font=self.TITLE_FONT)
         self.title.pack()
 
-        self.fileSelect = FileSelect(self.master, buttonFont=self.mainFont,
-            labelFont=self.mainFont, noFileSelectedText='Select a file to analyse')
+        # Create a file selector for the file to analyse
+        self.fileSelect = FileSelect(self.master, buttonFont=self.MAIN_FONT,
+            labelFont=self.MAIN_FONT, noFileSelectedText='Select a file to analyse')
         self.fileSelect.pack(pady=30)
 
+        # Create a button to do the analysis
         self.analyseButton = tk.Button(self.master,
-            text='Analyse file', font=self.mainFont, command=self.analyseFile)
+            text='Analyse file', font=self.MAIN_FONT, command=self.analyseFile)
         self.analyseButton.pack(pady=0)
 
-        self.outputFrame = tk.Frame(self.master, background='white')
-        self.outputFrame.pack(pady=30, padx=30, fill=tk.BOTH, expand=True, side=tk.LEFT)
+        # Create a place to display the results in
+        self.resultsFrame = tk.Frame(self.master, background='white')
+        self.resultsFrame.pack(pady=30, padx=30, fill=tk.BOTH, expand=True, side=tk.LEFT)
 
     def analyseFile(self):
         fileName = self.fileSelect.fileName
+        # If no file is selected, give a warning
         if fileName is None:
             tk.messagebox.showwarning(message='Please select a file')
             return
         try:
             # Remove all children of output frame
-            for widget in self.outputFrame.winfo_children():
+            for widget in self.resultsFrame.winfo_children():
                 widget.destroy()
-
+            
+            # Loop through all of the things to analyse
             analysis = {}
-
             codeToAnalyse = files.read(fileName)
-
-            for value in self.propertiesToAnalyse:
-                analysis[value] = self.propertiesToAnalyse[value](code=codeToAnalyse)
+            for value in self.PROPERTIES_TO_ANALYSE:
+                analysis[value] = self.PROPERTIES_TO_ANALYSE[value](code=codeToAnalyse)
 
             self.displayAnalysis(analysis)
 
@@ -78,21 +90,26 @@ class Application:
         except UnicodeError:
             tk.messagebox.showerror('Unicode error',
                 'This file can not be read as python code')
+            self.fileSelect.deselectFile()
+            return
 
         except:
             tk.messagebox.showerror('Unknown error', 'An unexpected error has occured')
-            raise 
             return
     
     def displayAnalysis(self, analysis):
+        # Get the name and extension of the selected file
         fileName = os.path.basename(self.fileSelect.fileName)
-        self.resultsHeading = tk.Label(self.outputFrame, font=self.mainFont,
+
+        # Create a heading for the results
+        self.resultsHeading = tk.Label(self.resultsFrame, font=self.MAIN_FONT,
             text=f'Analysis of {fileName}:', background='white')
         self.resultsHeading.pack(pady=10)
 
+        # Loop through the results and create a label to display each one
         for value in analysis:
             text = f'{value}: {analysis[value]}'
-            label = tk.Label(self.outputFrame, text=text, font=self.mainFont, background='white')
+            label = tk.Label(self.resultsFrame, text=text, font=self.MAIN_FONT, background='white')
             label.pack(padx=10, pady=5)
 
 
